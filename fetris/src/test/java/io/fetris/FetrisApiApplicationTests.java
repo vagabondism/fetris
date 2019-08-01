@@ -1,4 +1,4 @@
-package io.fetris.api.fetrisapi;
+package io.fetris;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
