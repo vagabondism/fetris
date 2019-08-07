@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class InventoryTest {
 
@@ -34,5 +35,16 @@ public class InventoryTest {
         // then
         assertThat(ingredient).isNotEmpty();
         assertThat(ingredient.get().getName()).isEqualTo(ingredientName);
+    }
+
+    @Test
+    public void 재료를_null_로_넣으면_IllegalArgumentExceiption을_반환한다() {
+        // given
+        Inventory inventory = new Inventory();
+
+        // when & then
+        assertThatThrownBy(() -> inventory.keep(null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> inventory.keep(null, null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> inventory.keep(new Ingredient("마늘"), null)).isInstanceOf(IllegalArgumentException.class);
     }
 }
