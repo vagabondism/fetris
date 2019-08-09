@@ -1,9 +1,8 @@
 package io.fetris.domain.inventory;
 
 
-import lombok.EqualsAndHashCode;
-
 import java.time.LocalDate;
+import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 public class Ingredient {

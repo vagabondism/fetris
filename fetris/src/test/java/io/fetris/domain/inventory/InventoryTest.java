@@ -41,25 +41,30 @@ public class InventoryTest {
 
     @Test
     public void 인벤토리에서_재료를_꺼낼때는_오래된_재료부터_꺼낸다() {
-        // given
         String ingredientName = "양파";
-        Inventory inventory = getInventory(ingredientName, LocalDate.now().minusDays(1), LocalDate.now());
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDate today = LocalDate.now();
 
-        Inventory inventory2 = new Inventory();
-        Ingredient expectedIngredient2 = new Ingredient(ingredientName, LocalDate.now().minusDays(1L));
-        inventory2.keep(new Ingredient(ingredientName, LocalDate.now()), expectedIngredient2);
+        Ingredient ingredient = getInventory(ingredientName, yesterday, today)
+                .takeOut(ingredientName)
+                .get();
+        assertThat(ingredient).isEqualTo(new Ingredient(ingredientName, yesterday));
 
-        // when
-        Ingredient ingredient = inventory.takeOut(ingredientName)
-            .orElseThrow(IllegalArgumentException::new);
-        Ingredient ingredient2 = inventory2.takeOut(ingredientName)
-            .orElseThrow(IllegalArgumentException::new);
+        Ingredient ingredient1 = getInventory(ingredientName, today, yesterday)
+                .takeOut(ingredientName)
+                .get();
+        assertThat(ingredient1).isEqualTo(new Ingredient(ingredientName, yesterday));
 
-        // then
-        assertThat(ingredient).isEqualTo(expectedIngredient);
-        assertThat(ingredient2).isEqualTo(expectedIngredient2);
+        Ingredient ingredient2 = getInventory(ingredientName, today, yesterday, today)
+                .takeOut(ingredientName)
+                .get();
+        assertThat(ingredient2).isEqualTo(new Ingredient(ingredientName, yesterday));
+
+        Ingredient ingredient3 = getInventory(ingredientName, yesterday)
+                .takeOut(ingredientName)
+                .get();
+        assertThat(ingredient3).isEqualTo(new Ingredient(ingredientName, yesterday));
     }
-
 
     private Inventory getInventory(String ingredientName, LocalDate ...localDate) {
         Inventory inventory = new Inventory();

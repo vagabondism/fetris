@@ -23,10 +23,14 @@ public class Inventory {
     }
 
     public Optional<Ingredient> takeOut(String ingredientName) {
-        return ingredients.stream()
+        Optional<Ingredient> ingredient = ingredients.stream()
                 .filter(x -> x.getName().equals(ingredientName))
                 .sorted(Comparator.comparing(Ingredient::getKeepDate))
                 .findFirst();
+
+        ingredient.ifPresent(x -> ingredients.remove(x));
+
+        return ingredient;
     }
 
     private void validateIngredient(Ingredient[] ingredient) {
