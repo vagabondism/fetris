@@ -10,12 +10,16 @@ public class Ingredient {
     private final String name;
     private final LocalDate keepDate;
 
+    public Ingredient(String name) {
+        this(name, LocalDate.now());
+    }
+
     public Ingredient(String name, LocalDate keepDate) {
         this.name = name;
         this.keepDate = keepDate;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
