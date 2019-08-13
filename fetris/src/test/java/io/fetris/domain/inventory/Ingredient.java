@@ -9,14 +9,16 @@ public class Ingredient {
 
     private final String name;
     private final LocalDate keepDate;
+    private final int count;
 
-    public Ingredient(String name) {
-        this(name, LocalDate.now());
+    public Ingredient(String name, LocalDate keepDate, int count) {
+        this.name = name;
+        this.keepDate = keepDate;
+        this.count = count;
     }
 
     public Ingredient(String name, LocalDate keepDate) {
-        this.name = name;
-        this.keepDate = keepDate;
+        this(name, keepDate, 1);
     }
 
     String getName() {
@@ -25,5 +27,9 @@ public class Ingredient {
 
     LocalDate getKeepDate() {
         return keepDate;
+    }
+
+    public int getCount() {
+        return count;
     }
 }

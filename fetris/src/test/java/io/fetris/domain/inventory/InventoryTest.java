@@ -7,8 +7,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 
 public class InventoryTest {
 
@@ -20,7 +18,7 @@ public class InventoryTest {
         assertThat(inventory.getAllIngredients()).hasSize(0);
 
         // when
-        inventory.keep(new Ingredient("양파"), new Ingredient("마늘"));
+        inventory.keep(new Ingredient("양파", LocalDate.now().minusDays(1), 5), new Ingredient("마늘", LocalDate.now().minusDays(1), 5));
 
         // then
         assertThat(inventory.getAllIngredients()).hasSize(2);
@@ -29,8 +27,8 @@ public class InventoryTest {
     @Test
     public void 인밴토리는_보관된_재료를_꺼낼_수_있다() {
         // given
-        Ingredient onion = new Ingredient("양파");
-        Ingredient garlic = new Ingredient("마늘");
+        Ingredient onion = new Ingredient("양파", LocalDate.now().minusDays(1), 5);
+        Ingredient garlic = new Ingredient("마늘", LocalDate.now().minusDays(1), 5);
         Inventory inventory = new Inventory();
         inventory.keep(onion, garlic);
 
@@ -46,7 +44,7 @@ public class InventoryTest {
     public void 존재하지_않는_재료를_꺼내면_예외() {
         // given
         Inventory inventory = new Inventory();
-        Ingredient onion = new Ingredient("양파");
+        Ingredient onion = new Ingredient("양파", LocalDate.now().minusDays(1), 5);
         inventory.keep(onion);
 
         // when & than
@@ -78,5 +76,43 @@ public class InventoryTest {
         assertThatThrownBy(() -> inventory.keep(null)).isInstanceOf(InventoryException.class);
         assertThatThrownBy(() -> inventory.keep(null, null)).isInstanceOf(InventoryException.class);
         assertThatThrownBy(() -> inventory.keep(new Ingredient("마늘", LocalDate.now()), null)).isInstanceOf(InventoryException.class);
+    }
+
+    @Test
+    public void 양파_5개중_3개를_꺼낸다() {
+        // given
+        Ingredient oldOnion = new Ingredient("양파", LocalDate.now().minusDays(1), 5);
+
+        // when
+        Ingredient ingredient = new Inventory(oldOnion).takeOut("양파", 3);
+
+        // then
+        assertThat(ingredient).isEqualTo(new Ingredient("양파", LocalDate.now().minusDays(1), 3));
+    }
+
+    @Test
+    public void 양파_5개중_1개를_꺼낸다() {
+        // given
+        Ingredient oldOnion = new Ingredient("양파", LocalDate.now().minusDays(1), 5);
+
+        // when
+        Inventory inventory = new Inventory(oldOnion);
+        Ingredient ingredient = inventory.takeOut("양파", 1);
+
+        // then
+        assertThat(ingredient).isEqualTo(new Ingredient("양파", LocalDate.now().minusDays(1), 1));
+        assertThat(inventory.takeOut("양파")).isEqualTo(new Ingredient("양파", LocalDate.now().minusDays(1), 4));
+    }
+
+    @Test
+    public void 양파_3개중_3개를_꺼낸다() {
+        // given
+        Ingredient oldOnion = new Ingredient("양파", LocalDate.now().minusDays(1), 3);
+
+        // when
+        Ingredient ingredient = new Inventory(oldOnion).takeOut("양파", 3);
+
+        // then
+        assertThat(ingredient).isEqualTo(new Ingredient("양파", LocalDate.now().minusDays(1), 3));
     }
 }
